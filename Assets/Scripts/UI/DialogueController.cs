@@ -17,8 +17,11 @@ public class DialogueController : MonoBehaviour
     [SerializeField]
     private Button nextButton = null;
 
-    private void Start()
+    private Vector3 originalPos;
+
+    private void Awake()
     {
+        originalPos = panel.rectTransform.anchoredPosition3D;
         nextButton.onClick.AddListener(() =>
         {
             StoryManager.Instance.NextDialogue();
@@ -27,6 +30,8 @@ public class DialogueController : MonoBehaviour
 
     public void StartDialogue()
     {
+        panel.rectTransform.anchoredPosition3D = Vector3.down * 100;
+        LeanTween.moveY(panel.gameObject, originalPos.y, 1).setEaseOutQuint();
         panel.gameObject.SetActive(true);
     }
 
@@ -48,6 +53,9 @@ public class DialogueController : MonoBehaviour
 
     public void CloseDialogue()
     {
-        panel.gameObject.SetActive(false);
+        LeanTween.moveY(panel.gameObject, -100, 0.5f).setEaseInQuint().setOnComplete(() =>
+        {
+            panel.gameObject.SetActive(false);
+        });
     }
 }
