@@ -12,7 +12,7 @@ namespace Platformer.Gameplay
     /// <typeparam name="PlayerDeath"></typeparam>
     public class PlayerDeath : Simulation.Event<PlayerDeath>
     {
-        PlatformerModel model = Simulation.GetModel<PlatformerModel>();
+        private PlatformerModel model = Simulation.GetModel<PlatformerModel>();
 
         public override void Execute()
         {
