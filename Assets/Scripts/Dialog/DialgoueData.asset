@@ -29,3 +29,9 @@ MonoBehaviour:
       - chat: Okay
         actorName: Player
         isOnRightSide: 1
+  - StoryName: 2 - Inferno
+    Chapter:
+    - chapterName: Salam Pembuka
+      Chat: []
+    - chapterName: Gelut pertama
+      Chat: []

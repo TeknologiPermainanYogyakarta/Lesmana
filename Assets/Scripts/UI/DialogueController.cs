@@ -30,10 +30,20 @@ public class DialogueController : MonoBehaviour
         panel.gameObject.SetActive(true);
     }
 
-    public void SetText(string _text, string _actor)
+    public IEnumerator SetText(string _text, string _actor)
     {
-        chat.text = _text;
+        string showText = "";
         actor.text = _actor;
+
+        foreach (var item in _text.ToCharArray())
+        {
+            showText += item;
+            chat.text = showText;
+
+            yield return null;
+        }
+
+        yield return null;
     }
 
     public void CloseDialogue()

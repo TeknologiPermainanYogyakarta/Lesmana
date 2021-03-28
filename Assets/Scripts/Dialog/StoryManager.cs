@@ -44,11 +44,11 @@ public class StoryManager : Singleton<StoryManager>
     {
         for (int i = 0; i < chapterData.Chat.Count; i++)
         {
+            _paused = true;
             string _text = chapterData.Chat[i].chat;
             string _actor = chapterData.Chat[i].actorName;
 
-            ui.SetText(_text, _actor);
-            _paused = true;
+            yield return ui.SetText(_text, _actor);
 
             yield return new WaitUntil(() => !_paused);
         }
