@@ -170,10 +170,6 @@ public class PlayerController : KinematicObject
             }
             else
             {
-                if (inWallJump)
-                {
-                    targetVelocity = move * 1;
-                }
             }
         }
     }
@@ -248,7 +244,7 @@ public class PlayerController : KinematicObject
     {
         if (wallJumping)
         {
-            if (facingRight)
+            if (!facingRight)
             {
                 targetVelocity.x = 5;
                 velocity.y = 5;

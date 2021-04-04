@@ -964,7 +964,7 @@ MonoBehaviour:
   health: {fileID: 0}
   controlEnabled: 1
   jump: 0
-  facingRight: 1
+  facingRight: 0
   dashTime: 0.1
   dashing: 0
   dashCount: 0
