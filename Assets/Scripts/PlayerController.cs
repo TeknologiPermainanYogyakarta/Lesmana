@@ -39,6 +39,8 @@ public class PlayerController : KinematicObject
 
     public Bounds Bounds => collider2d.bounds;
 
+    public bool facingRight;
+
     public float dashTime;
     private float dashTimeTimer;
     public bool dashing;
@@ -69,28 +71,25 @@ public class PlayerController : KinematicObject
         grabWall = Physics2D.OverlapCircle(wallDetect.position, .2f, wallLayer);
         if (controlEnabled)
         {
-            move.x = Input.GetAxisRaw("Horizontal");
+            move.x = Input.GetAxis("Horizontal");
             if (jumpState == JumpState.Grounded && Input.GetButtonDown("Jump"))
                 jumpState = JumpState.PrepareToJump;
+            if (IsGrounded)
+            {
+            }
             else if (Input.GetButtonUp("Jump"))
             {
                 stopJump = true;
                 //Schedule<PlayerStopJump>().player = this;
             }
         }
-        if (IsGrounded)
-        {
-            //inWallJump = false;
-        }
         else
         {
             move.x = 0;
         }
-        Debug.Log(dashTime);
-        WallJump();
 
         UpdateJumpState();
-        AirDash();
+        Dash();
 
         WallSlide();
         base.Update();
@@ -145,18 +144,15 @@ public class PlayerController : KinematicObject
             }
         }
 
-        if (move.x > 0.01f)
-            spriteRenderer.flipX = false;
-        else if (move.x < -0.01f)
-            spriteRenderer.flipX = true;
+        if (move.x > 0.01f && facingRight)
+            Flip();
+        else if (move.x < -0.01f && !facingRight)
+            Flip();
 
         //animator.SetBool("grounded", IsGrounded);
         //animator.SetFloat("velocityX", Mathf.Abs(velocity.x) / maxSpeed);
-        if (wallJumping)
-        {
-            targetVelocity.x = 5;
-            velocity.y = 5;
-        }
+
+        WallJump(facingRight);
         if (dashing)
         {
             targetVelocity = move * 50;
@@ -184,7 +180,7 @@ public class PlayerController : KinematicObject
         Landed
     }
 
-    public void AirDash()
+    public void Dash()
     {
         //if (!dashing)
         //{
@@ -210,41 +206,66 @@ public class PlayerController : KinematicObject
         //        dashing = false;
         //    }
         //}
-
-        //if (Input.GetButtonDown("Dash") && dashCooldownTimer <= 0 && !grabWall && move.x != 0)
-        //{
-        //    dashing = true;
-        //    dashTimeTimer = dashTime;
-        //    dashCooldownTimer = dashCooldown;
-        //}
-        //else
-        //{
-        //    dashTimeTimer -= Time.deltaTime;
-        //    dashCooldownTimer -= Time.deltaTime;
-        //    if (dashTimeTimer <= 0)
-        //    {
-        //        dashing = false;
-        //        gravityModifier = 2;
-        //    }
-        //}
+        if (IsGrounded)
+        {
+            dashCount = 0;
+        }
+        if (Input.GetButtonDown("Dash") && !grabWall && move.x != 0)
+        {
+            if (jumpState == JumpState.Grounded && dashCooldownTimer <= 0)
+            {
+                dashing = true;
+                dashTimeTimer = dashTime;
+                dashCooldownTimer = dashCooldown;
+            }
+            if (jumpState == JumpState.InFlight && dashCount == 0)
+            {
+                dashing = true;
+                dashCount += 1;
+                dashTimeTimer = dashTime;
+            }
+        }
+        else
+        {
+            dashTimeTimer -= Time.deltaTime;
+            dashCooldownTimer -= Time.deltaTime;
+            if (dashTimeTimer <= 0)
+            {
+                dashing = false;
+                gravityModifier = 2;
+            }
+        }
     }
 
-    public void WallJump()
+    public void WallJump(bool facingRight)
     {
-        //if (jumpState == JumpState.InFlight && Input.GetButtonDown("Jump") && grabWall)
-        //{
-        //    wallJumping = true;
-        //    //inWallJump = true;
-        //    wallJumpTime = 0.5f;
-        //}
-        //else
-        //{
-        //    wallJumpTime -= Time.deltaTime;
-        //    if (wallJumpTime <= 0)
-        //    {
-        //        wallJumping = false;
-        //    }
-        //}
+        if (wallJumping)
+        {
+            if (facingRight)
+            {
+                targetVelocity.x = 5;
+                velocity.y = 5;
+            }
+            else
+            {
+                targetVelocity.x = -5;
+                velocity.y = 5;
+            }
+        }
+        if (jumpState == JumpState.InFlight && Input.GetButtonDown("Jump") && grabWall)
+        {
+            wallJumping = true;
+            //inWallJump = true;
+            wallJumpTime = 0.5f;
+        }
+        else
+        {
+            wallJumpTime -= Time.deltaTime;
+            if (wallJumpTime <= 0)
+            {
+                wallJumping = false;
+            }
+        }
     }
 
     public void WallSlide()
@@ -254,5 +275,11 @@ public class PlayerController : KinematicObject
             //gravityModifier = 0.05f;
             velocity.y = -0.2f;
         }
+    }
+
+    public void Flip()
+    {
+        transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        facingRight = !facingRight;
     }
 }

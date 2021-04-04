@@ -9,7 +9,7 @@ public class KinematicObject : MonoBehaviour
 {
     public float minGroundNormalY = .65f;
 
-    public float gravityModifier = 10f;
+    public float gravityModifier;
 
     public Vector2 velocity;
 
@@ -37,6 +37,7 @@ public class KinematicObject : MonoBehaviour
 
     protected virtual void Start()
     {
+        gravityModifier = 2;
         contactFilter.useTriggers = false;
         contactFilter.SetLayerMask(Physics2D.GetLayerCollisionMask(gameObject.layer));
         contactFilter.useLayerMask = true;
