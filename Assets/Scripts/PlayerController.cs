@@ -52,7 +52,7 @@ public class PlayerController : KinematicObject
     public LayerMask wallLayer;
     public bool grabWall;
 
-    //public bool inWallJump;
+    public bool inWallJump;
     public bool wallJumping;
 
     public float wallJumpTime;
@@ -74,19 +74,16 @@ public class PlayerController : KinematicObject
             move.x = Input.GetAxis("Horizontal");
             if (jumpState == JumpState.Grounded && Input.GetButtonDown("Jump"))
                 jumpState = JumpState.PrepareToJump;
-            if (IsGrounded)
-            {
-            }
             else if (Input.GetButtonUp("Jump"))
             {
                 stopJump = true;
                 //Schedule<PlayerStopJump>().player = this;
             }
         }
-        else
-        {
-            move.x = 0;
-        }
+        //else
+        //{
+        //    move.x = 0;
+        //}
 
         UpdateJumpState();
         Dash();
@@ -166,7 +163,10 @@ public class PlayerController : KinematicObject
             }
             else
             {
-                //targetVelocity.x -= Time.deltaTime;
+                if (inWallJump)
+                {
+                    targetVelocity = move * 1;
+                }
             }
         }
     }
@@ -255,7 +255,7 @@ public class PlayerController : KinematicObject
         if (jumpState == JumpState.InFlight && Input.GetButtonDown("Jump") && grabWall)
         {
             wallJumping = true;
-            //inWallJump = true;
+            inWallJump = true;
             wallJumpTime = 0.5f;
         }
         else
