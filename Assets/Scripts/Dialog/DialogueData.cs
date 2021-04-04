@@ -10,7 +10,6 @@ public class DialogueMasterData : ScriptableObject
 }
 
 [System.Serializable]
-
 public class LevelStoryData
 {
     public string StoryName;
@@ -18,7 +17,6 @@ public class LevelStoryData
 }
 
 [System.Serializable]
-
 public class ChapterData
 {
     public string chapterName;

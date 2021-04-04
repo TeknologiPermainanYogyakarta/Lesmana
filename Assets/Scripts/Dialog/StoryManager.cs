@@ -14,7 +14,6 @@ public class StoryManager : Singleton<StoryManager>
     private Coroutine _storyCoroutine;
 
     [ContextMenu("Start Story")]
-
     public void test()
     {
         StartStory(0);
