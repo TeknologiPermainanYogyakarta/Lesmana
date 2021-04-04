@@ -141,9 +141,9 @@ public class PlayerController : KinematicObject
             }
         }
 
-        if (move.x > 0.01f && facingRight)
+        if (move.x > 0.01f && !facingRight)
             Flip();
-        else if (move.x < -0.01f && !facingRight)
+        else if (move.x < -0.01f && facingRight)
             Flip();
 
         //animator.SetBool("grounded", IsGrounded);
@@ -152,7 +152,14 @@ public class PlayerController : KinematicObject
         WallJump(facingRight);
         if (dashing)
         {
-            targetVelocity = move * 50;
+            if (facingRight)
+            {
+                targetVelocity.x = 50;
+            }
+            if (!facingRight)
+            {
+                targetVelocity.x = -50;
+            }
             gravityModifier = -1.5f;
         }
         else if (!dashing && !wallJumping)
