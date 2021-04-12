@@ -80,6 +80,10 @@ public class PlayerController : KinematicObject
                 //Schedule<PlayerStopJump>().player = this;
             }
         }
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            StartCoroutine(Attack());
+        }
         //else
         //{
         //    move.x = 0;
@@ -284,5 +288,12 @@ public class PlayerController : KinematicObject
     {
         transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
         facingRight = !facingRight;
+    }
+
+    public IEnumerator Attack()
+    {
+        animator.SetBool("Attack", true);
+        yield return new WaitForSeconds(0.5f);
+        animator.SetBool("Attack", false);
     }
 }
