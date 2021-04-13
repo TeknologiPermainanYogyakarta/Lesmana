@@ -34,7 +34,7 @@ public class PlayerController : KinematicObject
     public bool jump;
     private Vector2 move;
     private SpriteRenderer spriteRenderer;
-    internal Animator animator;
+    public Animator animator;
     private readonly PlatformerModel model = Simulation.GetModel<PlatformerModel>();
 
     public Bounds Bounds => collider2d.bounds;
@@ -63,7 +63,6 @@ public class PlayerController : KinematicObject
         audioSource = GetComponent<AudioSource>();
         collider2d = GetComponent<Collider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        animator = GetComponent<Animator>();
     }
 
     protected override void Update()
@@ -112,6 +111,7 @@ public class PlayerController : KinematicObject
                 {
                     //Schedule<PlayerJumped>().player = this;
                     jumpState = JumpState.InFlight;
+                    animator.SetBool("Jump", true);
                 }
                 break;
 
@@ -125,6 +125,7 @@ public class PlayerController : KinematicObject
 
             case JumpState.Landed:
                 jumpState = JumpState.Grounded;
+                animator.SetBool("Jump", false);
                 break;
         }
     }
@@ -171,6 +172,7 @@ public class PlayerController : KinematicObject
             if (move.x != 0)
             {
                 targetVelocity = move * maxSpeed;
+                //animator.SetBool("Run", true);
             }
             else
             {
@@ -222,6 +224,8 @@ public class PlayerController : KinematicObject
             if (jumpState == JumpState.Grounded && dashCooldownTimer <= 0)
             {
                 dashing = true;
+                animator.SetBool("Dash", dashing);
+
                 dashTimeTimer = dashTime;
                 dashCooldownTimer = dashCooldown;
             }
@@ -239,6 +243,8 @@ public class PlayerController : KinematicObject
             if (dashTimeTimer <= 0)
             {
                 dashing = false;
+                animator.SetBool("Dash", dashing);
+
                 gravityModifier = 2;
             }
         }
@@ -277,6 +283,8 @@ public class PlayerController : KinematicObject
 
     public void WallSlide()
     {
+        //animator.SetBool("Grab Wall", grabWall);
+
         if (jumpState == JumpState.InFlight && grabWall)
         {
             //gravityModifier = 0.05f;
